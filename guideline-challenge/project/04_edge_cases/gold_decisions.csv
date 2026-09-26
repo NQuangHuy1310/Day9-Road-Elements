@@ -1,1 +1,21 @@
 sample_id,decision_id,expected,severity,rationale
+2.jpg,d1,2 bbox vehicle_signal_head với display=yellow tại x~153-207 và x~332-386,major,Hai đầu đèn vàng tách biệt trong export; không gộp thành một bbox
+4.jpg,d1,10 bbox vehicle_signal_head riêng biệt; 7 display=unknown và 3 display=red,major,Export có mười đầu đèn; không gom các đèn nhỏ thành một box
+4.jpg,d2,geometry: mỗi bbox ôm một vỏ đèn nhìn thấy; không bao trọn cả giá treo,minor,Đánh giá hình học theo từng đầu đèn thay vì theo cả cụm
+6.jpg,d1,IGNORE: không có bbox vehicle_signal_head tại x~608-950 y~250-578,major,Ảnh gốc cho thấy biểu tượng xe đạp; box trong export thuộc đối tượng ngoài scope theo mục Scope
+8.jpg,d1,1 bbox vehicle_signal_head tại x~284-366 y~51-95; signal_form=arrow; display=red; arrow_direction=left,critical,Nhầm đèn mũi tên đỏ thành xanh làm sai nhãn màu đầu đèn xe
+8.jpg,d2,ego_applicability=does_not_apply cho đầu đèn mũi tên trái,major,Theo card EC-04 đèn rẽ trái không chi phối làn đi thẳng của ego
+11.jpg,d1,4 bbox vehicle_signal_head; 3 circular green và 1 arrow unknown,major,Export tách bốn đầu đèn riêng và không suy màu của mũi tên mờ
+11.jpg,d2,bbox tại x~705-729 y~179-230: signal_form=arrow; display=unknown; arrow_direction=left; ego_applicability=unknown; needs_review=yes,major,Không gán màu khi không đọc được pha sáng của đầu mũi tên
+11.jpg,d3,geometry: bbox mũi tên trái ôm vỏ nhìn thấy quanh x=705-729 y=179-230,minor,Không lấy thêm giá treo hay đầu đèn tròn bên cạnh
+12.jpg,d1,2 bbox vehicle_signal_head riêng biệt tại x~686-720 và x~756-801,major,Hai đầu đèn trên cùng giá treo mang hai trạng thái riêng
+12.jpg,d2,đầu tại x~686-720: signal_form=arrow; display=green; arrow_direction=left,critical,Không nhầm mũi tên xanh với đèn đỏ hoặc màu đầu tròn cạnh bên
+12.jpg,d3,đầu tại x~756-801: signal_form=circular; display=yellow; arrow_direction=not_applicable; needs_review=yes,major,Đèn tròn vàng là một object độc lập với mũi tên xanh
+14.jpg,d1,bbox tại x~207-221 y~430-473: vehicle_signal_head; display=red,major,Export thể hiện đầu đèn đỏ nhỏ; không bỏ sót do bị che hoặc ở xa
+14.jpg,d2,geometry: bbox tại x~207-221 y~430-473 chỉ ôm phần vỏ nhìn thấy,minor,Không dựng phần đầu đèn bị che khuất
+15.jpg,d1,4 bbox vehicle_signal_head riêng biệt; 3 display=unknown và 1 display=unlit,major,Export phân biệt đầu đèn không đọc được màu với đầu đèn được gán tắt
+15.jpg,d2,bbox tại x~554-598 y~2-115: display=unlit; needs_review=yes,major,Đầu đèn tối được đánh dấu cần review chứ không đoán màu đỏ hoặc xanh
+16.jpg,d1,IGNORE: không vẽ bbox vehicle_signal_head cho tín hiệu người đi bộ,major,Đèn người đi bộ ngoài scope ngay cả khi hiện màu sáng
+16.jpg,d2,3 bbox vehicle_signal_head riêng biệt; display=green theo export,major,Không bỏ qua các đầu đèn xe hợp lệ chỉ vì có tín hiệu ngoài scope trong ảnh
+17.jpg,d1,6 bbox vehicle_signal_head riêng biệt; 3 display=green và 3 display=unlit theo export,major,Chấm từng đầu đèn nhìn thấy thay vì coi cả giàn là một object
+17.jpg,d2,geometry: bbox ôm vỏ nhìn thấy của từng đầu đèn; không mở rộng ra ngoài khung ảnh,minor,Tuân thủ quy tắc bbox phần nhìn thấy; export ảnh này không có bbox ytl=0

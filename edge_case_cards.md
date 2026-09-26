@@ -116,12 +116,11 @@ Scene: Giá long môn treo song song hai đầu đèn khác nhau phục vụ hai
 Observation: Đèn mũi tên đang sáng xanh (green arrow left), đèn tròn đang sáng vàng (yellow circular). Hai đầu đèn gắn cạnh nhau trên cùng một thanh xà ngang
 Decision: LABEL
 Expected: Tách thành 2 bounding box riêng biệt:
-
 - Box 1: signal_form = arrow, display = green, arrow_direction = left, ego_applicability = applies, needs_review = no
 - Box 2: signal_form = circular, display = yellow, arrow_direction = not_applicable, ego_applicability = applies, needs_review = yes
-  Rationale: Mỗi đầu đèn vật lý mang chỉ lệnh độc lập cho từng luồng xe. Gộp chúng lại sẽ tạo ra xung đột trạng thái (vừa xanh vừa vàng) làm hệ thống downstream không thể diễn giải ngữ nghĩa
-  Common mistake: Vẽ một hộp bao chung cho cả hai đầu đèn vì thấy chúng nằm liền kề trên cùng một khung treo
-  Diversity: conflict
+Rationale: Mỗi đầu đèn vật lý mang chỉ lệnh độc lập cho từng luồng xe. Gộp chúng lại sẽ tạo ra xung đột trạng thái (vừa xanh vừa vàng) làm hệ thống downstream không thể diễn giải ngữ nghĩa
+Common mistake: Vẽ một hộp bao chung cho cả hai đầu đèn vì thấy chúng nằm liền kề trên cùng một khung treo
+Diversity: conflict
 
 ---
 
