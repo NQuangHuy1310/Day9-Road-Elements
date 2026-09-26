@@ -1,3 +1,13 @@
 sample_id,split,tags,reason
-3.jpg,example,vehicle_signal_head;pedestrian_signal,Ảnh minh hoạ đèn xe đỏ và đèn người đi bộ ngoài scope
-18.jpg,example,vehicle_signal_head;pedestrian_signal,Ảnh minh hoạ đèn xe xanh và đèn người đi bộ ngoài scope
+3,example,normal;negative,Ảnh minh hoạ đèn xe đỏ và đèn người đi bộ ngoài scope
+18,example,normal;negative,Ảnh minh hoạ đèn xe xanh và đèn người đi bộ ngoài scope
+2,calibration,normal;edge,Kiểm tra tách hai đầu đèn vàng thành hai bbox và ghi màu trên từng đầu
+4,calibration,edge;small_far,Kiểm tra số lượng bbox và màu của nhiều đầu đèn nhỏ ở xa
+6,calibration,edge;negative;ambiguity,Kiểm tra quyết định với vùng nghi vấn hoặc tín hiệu xe đạp ngoài scope; cần đối chiếu card và gold đang mâu thuẫn
+15,calibration,edge;ambiguity,Kiểm tra phân biệt đèn tắt unlit với màu không đủ bằng chứng unknown
+17,calibration,edge;occlusion,Kiểm tra tách từng đầu đèn và bbox phần vỏ nhìn thấy; cần đối chiếu quy tắc chạm mép với gold
+8,blind,edge;critical,Thử gán màu và hướng của đèn mũi tên đỏ cùng quan hệ với làn ego
+11,blind,edge;ambiguity,Thử gán unknown khi đầu mũi tên không đọc rõ màu và kiểm tra bbox
+12,blind,edge;critical;conflict,Thử tách hai đầu đèn cùng giá treo có màu và hình thức khác nhau
+14,blind,edge;occlusion;small_far,Thử nhận diện đầu đèn nhỏ bị che và bbox chỉ ôm phần vỏ nhìn thấy
+16,blind,normal;negative,Thử bỏ qua đèn người đi bộ nhưng vẫn gắn nhãn các đèn xe hợp lệ

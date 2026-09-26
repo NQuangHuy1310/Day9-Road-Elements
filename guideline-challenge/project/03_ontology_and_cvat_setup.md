@@ -1,19 +1,18 @@
 # Ontology + CVAT setup
 
-Bảng ontology là **source of truth** cho schema CVAT: `03_cvat_labels.json` phải khớp từng dòng ở đây. Thay mọi
-placeholder mới là xong (gate G2).
+Bảng ontology là **source of truth** cho schema CVAT: `03_cvat_labels.json` phải khớp từng dòng ở đây. Kết quả setup test được ghi theo trạng thái thực tế ở cuối file.
 
 ## Ontology table
 
-| Name | Geometry | Type | Allowed values | Default | Mutable? | Rationale |
-|---|---|---|---|---|---|---|
-| `vehicle_signal_head` | rectangle | class | — | — | — | Mỗi vỏ đèn xe cơ giới là một instance riêng; rectangle đủ để ôm sát vỏ nhìn thấy, downstream cần bbox cho detection model. |
-| `signal_form` | — | attribute of `vehicle_signal_head` | `__undefined__`, `circular`, `arrow`, `unknown` | `__undefined__` | No | Phân biệt đèn tròn vs đèn mũi tên; ảnh hưởng cách đọc `arrow_direction`. |
-| `display` | — | attribute of `vehicle_signal_head` | `__undefined__`, `red`, `yellow`, `green`, `unlit`, `unknown` | `__undefined__` | No | Màu đang sáng là thông tin cốt lõi cho downstream. `unlit` = vỏ nhìn rõ nhưng không bóng nào sáng; `unknown` = không đủ bằng chứng phân biệt màu (xa, lóa, che). |
-| `arrow_direction` | — | attribute of `vehicle_signal_head` | `__undefined__`, `left`, `straight`, `right`, `u_turn`, `unknown`, `not_applicable` | `__undefined__` | No | Chỉ có ý nghĩa khi `signal_form=arrow`. Nếu `signal_form=circular` → chọn `not_applicable`. |
-| `ego_applicability` | — | attribute of `vehicle_signal_head` | `__undefined__`, `applies`, `does_not_apply`, `unknown` | `__undefined__` | No | Đèn có áp dụng cho xe camera (ego vehicle) hay không. Giúp downstream lọc đèn liên quan. |
-| `needs_review` | — | attribute of `vehicle_signal_head` | `__undefined__`, `yes`, `no` | `__undefined__` | No | Flag cho reviewer khi annotator không chắc chắn. |
-| `image_escalate` | — (tag) | class (tag) | — | — | — | Tag cấp ảnh, không gắn vào object cụ thể. Dùng khi toàn bộ ảnh có vấn đề cần reviewgier xem xét (ví dụ: ảnh quá tối, quá lóa, nhiều đèn mơ hồ). |
+| Name                  | Geometry  | Type                               | Allowed values                                                                      | Default         | Mutable? | Rationale                                                                                                                                                        |
+| --------------------- | --------- | ---------------------------------- | ----------------------------------------------------------------------------------- | --------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vehicle_signal_head` | rectangle | class                              | —                                                                                   | —               | —        | Mỗi vỏ đèn xe cơ giới là một instance riêng; rectangle đủ để ôm sát vỏ nhìn thấy, downstream cần bbox cho detection model.                                       |
+| `signal_form`         | —         | attribute of `vehicle_signal_head` | `__undefined__`, `circular`, `arrow`, `unknown`                                     | `__undefined__` | No       | Phân biệt đèn tròn vs đèn mũi tên; ảnh hưởng cách đọc `arrow_direction`.                                                                                         |
+| `display`             | —         | attribute of `vehicle_signal_head` | `__undefined__`, `red`, `yellow`, `green`, `unlit`, `unknown`                       | `__undefined__` | No       | Màu đang sáng là thông tin cốt lõi cho downstream. `unlit` = vỏ nhìn rõ nhưng không bóng nào sáng; `unknown` = không đủ bằng chứng phân biệt màu (xa, lóa, che). |
+| `arrow_direction`     | —         | attribute of `vehicle_signal_head` | `__undefined__`, `left`, `straight`, `right`, `u_turn`, `unknown`, `not_applicable` | `__undefined__` | No       | Chỉ có ý nghĩa khi `signal_form=arrow`. Nếu `signal_form=circular` → chọn `not_applicable`.                                                                      |
+| `ego_applicability`   | —         | attribute of `vehicle_signal_head` | `__undefined__`, `applies`, `does_not_apply`, `unknown`                             | `__undefined__` | No       | Đèn có áp dụng cho xe camera (ego vehicle) hay không. Giúp downstream lọc đèn liên quan.                                                                         |
+| `needs_review`        | —         | attribute of `vehicle_signal_head` | `__undefined__`, `yes`, `no`                                                        | `__undefined__` | No       | Flag cho reviewer khi annotator không chắc chắn.                                                                                                                 |
+| `image_escalate`      | — (tag)   | class (tag)                        | —                                                                                   | —               | —        | Tag cấp ảnh, không gắn vào object cụ thể. Dùng khi ảnh có vấn đề cần reviewer xem xét (ví dụ: ảnh quá tối, quá lóa, nhiều đèn mơ hồ).                            |
 
 ## Class hay attribute — lý do thiết kế
 
@@ -28,7 +27,7 @@ placeholder mới là xong (gate G2).
 - **Project:** `day9_demo` (Project ID: 8)
 - **Task Ground Truth:** `day9-test` (Task ID: 24, Job ID: 21) — 18 JPEG, 63 bounding boxes
 - **Task cho labeller:** `day9-test-labeller2` (Task ID: 26, Job ID: 23) — cùng 18 JPEG, chưa có annotation
-- **Guide của task đã dán `02_guideline.md`?** Chưa — `02_guideline_v1.md` vẫn còn TODO, cần hoàn thiện trước khi dán vào CVAT task description.
+- **Guide của task đã dán `02_guideline.md`?** Chưa xác nhận. File guideline v2 đã có tại `project/02_guideline.md`; cần kiểm tra trực tiếp task CVAT để xác nhận bản nào đang được dán trong Guide.
 - **Nhóm dùng Shape, không dùng Track:** Task ảnh tĩnh, không có temporal sequence. Track chỉ cần cho video.
 
 ## Labels JSON
@@ -42,9 +41,4 @@ File `03_cvat_labels.json` chứa schema import trực tiếp vào CVAT project.
 
 ## Setup test
 
-Một thành viên **chưa tham gia setup** mở task và trả lời: label gì, dùng tool nào, gán attribute nào, khi nào
-escalate. Ghi lại ai test và chỗ họ vấp:
-
-| Người test | Chỗ vấp | Ghi chú |
-|---|---|---|
-| TODO | TODO | TODO |
+**Chưa thực hiện:** Chưa có bằng chứng một thành viên không tham gia setup đã mở task để kiểm tra khả năng hiểu label, công cụ, attribute và quy tắc escalation. Vì vậy chưa thể kết luận task đã vượt qua setup test. Khi có thời gian, cần cho người khác thử trực tiếp trên CVAT và ghi lại người test cùng các vướng mắc thực tế.
