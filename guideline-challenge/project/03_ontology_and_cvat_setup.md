@@ -13,7 +13,7 @@ placeholder mới là xong (gate G2).
 | `arrow_direction` | — | attribute of `vehicle_signal_head` | `__undefined__`, `left`, `straight`, `right`, `u_turn`, `unknown`, `not_applicable` | `__undefined__` | No | Chỉ có ý nghĩa khi `signal_form=arrow`. Nếu `signal_form=circular` → chọn `not_applicable`. |
 | `ego_applicability` | — | attribute of `vehicle_signal_head` | `__undefined__`, `applies`, `does_not_apply`, `unknown` | `__undefined__` | No | Đèn có áp dụng cho xe camera (ego vehicle) hay không. Giúp downstream lọc đèn liên quan. |
 | `needs_review` | — | attribute of `vehicle_signal_head` | `__undefined__`, `yes`, `no` | `__undefined__` | No | Flag cho reviewer khi annotator không chắc chắn. |
-| `image_escalate` | — (tag) | class (tag) | — | — | — | Tag cấp ảnh, không gắn vào object cụ thể. Dùng khi toàn bộ ảnh có vấn đề cần reviewer xem xét (ví dụ: ảnh quá tối, quá lóa, nhiều đèn mơ hồ). |
+| `image_escalate` | — (tag) | class (tag) | — | — | — | Tag cấp ảnh, không gắn vào object cụ thể. Dùng khi toàn bộ ảnh có vấn đề cần reviewgier xem xét (ví dụ: ảnh quá tối, quá lóa, nhiều đèn mơ hồ). |
 
 ## Class hay attribute — lý do thiết kế
 
