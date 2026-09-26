@@ -10,13 +10,13 @@
 
 | Thành viên | GitHub | Vai trò chính | File phụ trách |
 |---|---|---|---|
-| Lương Tuấn Anh | -- | Annotator | 13.jpg đến 18.jpg |
-| Vương Ngọc Tiến |---|---|---|
-| Lê Chí Bằng |---|---|---|
-| Nguyễn Quang Huy | @NQuangHuy1310 | Tạo Guideline | Guideline v1 |
-| Trần An Hạ | @trananha |---|---|
-|---|---|---|---|
-|---|---|---|---|
+| Lương Tuấn Anh | @H4ppin3sS | Annotator | 13.jpg đến 18.jpg |
+| Vương Ngọc Tiến | @vuongoctien | Annotator | 7.jpg đến 12.jpg |
+| Lê Chí Bằng | @banglc | Setup server |---|
+| Nguyễn Quang Huy | @NQuangHuy1310 | Tạo Guideline | 02_guideline_v1.md |
+| Trần An Hạ | @trananha | Tạo Guideline | 02_guideline_v1.md |
+| Hoàng Tiến Dũng |---| Tạo Guideline | 02_guideline_v1.md |
+| Trần Bình Minh |---| Annotator | 1.jpg đến 6.jpg |
 
 Gợi ý chia vai (nhóm 2–3 người thì gộp): **spec owner** (`01`, `02`), **CVAT owner** (`03_*`, `sample_pack.csv`,
 `09`), **gold owner** (`04_edge_cases/`), **QA owner** (`05`, `06`, `07_blind_handoff/`). Mỗi file một người sửa
