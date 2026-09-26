@@ -2,7 +2,7 @@
 
 Điền trước phút 15. Thay mọi placeholder; còn sót thì `make status` báo ở gate G1.
 
-- **Team:** `Nhóm bàn 1-2 dãy phải`
+- **Team:** `Nhóm 1`
 - **Nhóm peer test bài của mình:** TODO (cặp A ↔ B; số nhóm lẻ thì ring 3 nhóm A → B → C → A — Lab Coach công bố)
 - **Nhóm mình test bài của:** TODO
 - **Problem family:** TODO (xem README mục "1 · Chọn bài toán")
