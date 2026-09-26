@@ -1,81 +1,77 @@
-# BẢN NHÁP — guideline đèn giao thông (chưa dùng để label/nộp)
+# Annotation guideline — đầu đèn giao thông cho xe cơ giới
 
-**Version:** v0 — đề xuất để nhóm xem xét; KHÔNG phải guideline đã chốt. Không tự sửa `project/02_guideline.md` từ file này.
+**Version:** v1 — guideline đầu tiên, áp dụng cho annotation thử và calibration trên 18 ảnh JPEG trong `data/data-image/`. V2 sẽ cập nhật sau calibration; v1 chưa phải bản đã freeze hoặc gold.
 
-## Những gì đã kiểm tra và những gì chưa biết
+## 1. Objective + scope
 
-- Đã xem trực tiếp `data/lisa/LISA01.jpg` và `LISA23.jpg`: có đầu đèn mũi tên trái đỏ và một đầu đèn tròn riêng bên cạnh; ở LISA23 đầu tròn sáng xanh. Đây là **quan sát trên ảnh**, không khẳng định cùng một đầu đèn chuyển pha hoặc quyền rẽ trái của xe ego.
-- Đã xem `data/bdd100k/BDD12.jpg`: có đèn hình người đi bộ; dùng làm ca phân biệt loại tín hiệu, không tuyên bố cả ảnh là negative.
-- Chưa xác nhận danh sách ảnh sẽ dùng, khả năng đọc tín hiệu ở từng ảnh, split example/calibration/blind, tiêu chuẩn pháp lý về quyền đi, hay CVAT trên máy nhóm. Do đó **chưa ấn định ví dụ chính thức hoặc gold**.
-- BDD là ảnh tĩnh; LISA trong repo là các ảnh trích từ một clip. Chưa kiểm tra video gốc hoặc tốc độ lấy mẫu: **không thể kết luận** sự kiện `red→green`, đèn chớp, đèn hỏng, chu kỳ bất thường chỉ từ một ảnh.
+Gắn bbox cho **đầu đèn giao thông dành cho xe cơ giới** có mặt tín hiệu nhìn được trong ảnh đường phố và ghi **màu đang sáng tại đúng ảnh đó**. Mục tiêu là dữ liệu nhận diện đầu đèn và màu hiển thị, không phải suy ra xe camera được đi, rẽ hướng nào, đèn có hỏng hay không.
 
-## 1. Objective + scope — đề xuất
+Không gắn nhãn đèn người đi bộ, đèn xe đạp, bộ đếm thời gian, biển báo, đèn hậu hoặc ánh phản chiếu. Một ảnh có thể có cả đối tượng trong và ngoài scope.
 
-Đề xuất bài toán hẹp: gắn bbox cho **từng đầu tín hiệu đèn dành cho xe cơ giới nhìn về phía camera**, mô tả hình thức tín hiệu, màu sáng đang quan sát, hướng mũi tên và mức độ có thể áp dụng cho làn/hướng ego **nếu ảnh đủ bằng chứng**. Output là annotation thị giác để phân tích chất lượng dữ liệu, **không phải quyết định lái xe hay kết luận được phép rẽ/đi thẳng**.
+## 2. Annotation unit
 
-Không label xe ưu tiên, biển báo, đèn người đi bộ, phản chiếu hoặc đèn hậu. Nếu mục tiêu thực sự là xác định "rẽ được/không được đi thẳng", nhóm phải cung cấp quy định địa phương, loại tín hiệu và lane mapping được kiểm chứng; schema hiện tại không mã hoá quyền đi.
+Mỗi JPEG là **một ảnh tĩnh** trong CVAT; dùng Shape, không dùng Track. Một bbox ứng với **một đầu/vỏ đèn** độc lập, không phải một bóng đèn hoặc cả giàn đèn. Nhiều bóng trong một vỏ chỉ tạo một bbox; hai vỏ cạnh nhau (ví dụ đầu mũi tên và đầu tròn) là hai bbox. Không nối các ảnh thành chuỗi thời gian.
 
-## 2. Annotation unit — đề xuất cần thử trên ảnh
+## 3. Geometry rule
 
-Một bbox cho **một đầu/mặt đèn hoạt động độc lập**: các bóng trong cùng vỏ là một object, mũi tên trong một đầu riêng cạnh đầu đèn tròn là hai object. Chưa định nghĩa ca cùng một vỏ có nhiều chỉ thị sáng cùng lúc; gặp ca đó ghi `display=unknown`, `needs_review=yes`, tag cả ảnh, rồi bổ sung rule sau khi kiểm chứng.
+Dùng rectangle ôm sát **vỏ đầu đèn nhìn thấy được** (bao gồm các bóng trong vỏ), không ôm cột, thanh ngang, bảng số đếm hoặc quầng sáng. Nếu đầu đèn bị che/cắt mép ảnh, bbox chỉ ôm phần nhìn thấy và dừng ở mép ảnh; không vẽ phần bị che theo suy đoán. Nếu không phân biệt được ranh giới đầu đèn với nền thì không vẽ bbox theo trí tưởng tượng, chuyển reviewer xem lại theo mục 7. Chưa ấn định tolerance theo pixel cho v1 vì ảnh có nhiều độ phân giải/kích thước đầu đèn; chốt sau hai người vẽ thử trên calibration.
 
-Nếu dùng `sample_pack.csv` để upload các JPEG rời, dùng CVAT **Shape** cho từng ảnh; không tự ghép Track giữa các frame LISA. Nếu nhóm chuyển sang video gốc, cần thiết kế quy trình Track và version schema **mới**.
+## 4. Taxonomy
 
-## 3. Geometry rule — đề xuất cần đo trên calibration
+Bản v1 dùng **một class** `vehicle_signal_head` (rectangle) và tag ảnh `image_escalate`. Schema CVAT hiện có năm select trên mỗi bbox; v1 tập trung vào màu `display`, các field còn lại điền theo quy tắc đơn giản dưới đây. Bảng này phải khớp `03_ontology_and_cvat_setup.md` và `03_cvat_labels.json` đi kèm.
 
-Rectangle ôm phần **vỏ/mặt đầu đèn thực sự nhìn thấy**, không ôm thanh treo, cột hoặc quầng sáng. Vật bị che/cắt khung: dừng bbox ở vùng nhìn thấy/mép ảnh, không vẽ phần bị che theo trí tưởng tượng. Ngưỡng sai số pixel **chưa chốt**; chỉ chốt sau khi xem kích thước các đầu đèn ở tập ảnh đã chọn và hai người vẽ thử.
+| Tên                   | Kiểu             | Giá trị/default                                                                              | Khi dùng                                                                                                                                                                              |
+| --------------------- | ---------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vehicle_signal_head` | Rectangle        | Một đầu đèn / bbox                                                                           | Đầu tín hiệu cho xe cơ giới, kể cả đầu mũi tên.                                                                                                                                       |
+| `signal_form`         | Select trên bbox | `circular`, `arrow`, `unknown`; mặc định `__undefined__`                                     | Chọn `arrow` nếu nhìn rõ mũi tên, `circular` nếu là đèn tròn; không phân biệt được thì `unknown`.                                                                                     |
+| `display`             | Select trên bbox | `red`, `yellow`, `green`, `unlit`, `unknown`; mặc định `__undefined__`                       | Màu sáng trên **chính đầu đèn**. Mũi tên đỏ vẫn là `red`; `unlit` chỉ khi nhìn rõ các bóng đều không sáng; không chắc thì `unknown`.                                                  |
+| `arrow_direction`     | Select trên bbox | `left`, `straight`, `right`, `u_turn`, `unknown`, `not_applicable`; mặc định `__undefined__` | Đèn tròn → `not_applicable`; mũi tên rõ → hướng thấy được; không đọc được hướng hoặc form → `unknown`.                                                                                |
+| `ego_applicability`   | Select trên bbox | `applies`, `does_not_apply`, `unknown`; mặc định `__undefined__`                             | V1 mặc định quyết định `unknown` khi ảnh không chứng minh được quan hệ với làn ego; không suy quyền được đi từ màu. Chỉ dùng hai giá trị còn lại khi có bằng chứng làn/hướng rõ ràng. |
+| `needs_review`        | Select trên bbox | `yes`, `no`; mặc định `__undefined__`                                                        | `no` nếu không có vướng mắc ở object; `yes` nếu object cần reviewer quyết định.                                                                                                       |
+| `image_escalate`      | Tag trên ảnh     | Có/không                                                                                     | Cần reviewer xử lý ca chưa có rule hoặc chưa chắc có nên label; không phải kết luận thiết bị lỗi.                                                                                     |
 
-## 4. Taxonomy — bản thử để tạo task CVAT
+`__undefined__` chỉ là placeholder **chưa điền**, không được còn lại ở bất kỳ select nào trên bbox khi hoàn tất; `unknown` là đã xem nhưng ảnh không đủ bằng chứng. V1 có ghi hình thức/hướng mũi tên khi nhìn rõ nhưng **không** suy quyền đi, chuyển pha hay nhấp nháy. `unlit` không có nghĩa là thiết bị hỏng. Nếu có vẻ nhiều màu sáng trong cùng một vỏ và không xác định được màu chủ đạo, chọn `display=unknown` và escalate.
 
-Chỉ một class rectangle `vehicle_signal_head`, một tag `image_escalate`. Bảng chi tiết/default và file Raw mẫu: `03_ontology_and_cvat_setup.md`, `03_cvat_labels.json` cùng thư mục `drafts/traffic-light/`. Đây là **đề xuất** chứ không phải schema đã xác nhận dùng được trên CVAT của nhóm.
+## 5. Inclusion / exclusion
 
-- `signal_form`: `circular` / `arrow` / `unknown`.
-- `display`: `red` / `yellow` / `green` / `unlit` / `unknown`. `unlit` nghĩa là quan sát được các bóng không sáng, **không phải đèn hỏng**.
-- `arrow_direction`: `left` / `straight` / `right` / `u_turn` / `unknown` / `not_applicable`.
-- `ego_applicability`: `applies` / `does_not_apply` / `unknown`, chỉ điền hai giá trị chắc chắn nếu thấy rõ làn/hướng liên quan.
-- `needs_review`: `yes` / `no`.
+- **LABEL:** Đầu đèn cho xe cơ giới có mặt hướng về camera đủ để nhận diện vỏ, dù xa/nhỏ hoặc chưa đọc được màu. Gắn bbox từng đầu và chọn `display` theo ảnh. Không yêu cầu xác định đầu đó áp dụng cho làn ego.
+- **IGNORE:** Đèn người đi bộ/xe đạp, bộ đếm số đứng riêng cạnh đèn, đèn hậu, đèn đường, biển báo, phản chiếu và mặt sau của đầu đèn quay khỏi camera. Không biến chấm sáng mờ không nhận diện được vỏ thành đầu đèn.
+- Đầu mũi tên là đèn xe cơ giới vẫn **LABEL**, ghi hướng khi thấy rõ nhưng không suy luật ưu tiên. Không lấy màu bộ đếm, đầu bên cạnh hay đèn hậu để điền `display`.
 
-Default các select = `__undefined__` nghĩa là **chưa trả lời**; `unknown` = đã xem nhưng không đủ bằng chứng. Không export object còn `__undefined__`. Đèn tròn → `arrow_direction=not_applicable`; đèn mũi tên → chọn hướng nhìn thấy hoặc `unknown`. Hình mũi tên trái đỏ và đầu tròn xanh **phải là hai observation riêng**, không sao chép màu hoặc suy ra quyền đi của cả giao lộ.
+## 6. Visibility / occlusion
 
-## 5. Inclusion / exclusion — đề xuất
+Bị che một phần/cắt khung: label nếu vẫn nhận ra đầu đèn, bbox phần thấy được. Xa/nhỏ, ngược sáng, lóa, trời tối: nếu thấy vỏ nhưng không chắc màu sáng thì `display=unknown`; không ép chọn màu dựa vào vị trí bóng (trên = đỏ, v.v.). Đầu nhìn tối do ảnh tối/che/lóa là `display=unknown`; chỉ chọn `unlit` nếu thấy rõ các bóng đều không sáng, **không kết luận hỏng**. Nếu không đủ dấu hiệu xác định đó là đầu đèn xe, không dựng bbox; ca phân vân thì dùng `image_escalate`.
 
-- LABEL khi nhận ra đây là đầu đèn cho xe cơ giới hướng về phía camera, kể cả màu mờ hoặc xa nhưng còn xác định được đầu đèn. Nếu màu không đọc được, chọn `display=unknown` thay vì bỏ object.
-- IGNORE tín hiệu người đi bộ/xe đạp, đèn hậu, đèn trang trí/phản chiếu, chấm sáng không xác định được là đầu đèn, và mặt đèn quay hẳn khỏi camera. Không gán một chấm sáng mờ thành "đèn lỗi".
-- Với đầu đèn trông có thể điều khiển nhánh/làn khác nhưng không thấy lane mapping: LABEL đầu đèn, `ego_applicability=unknown` — không bỏ qua chỉ vì chưa biết liên quan ego.
+## 7. Ambiguity / escalation
 
-## 6. Visibility / occlusion — đề xuất
+| Quyết định | Khi nào                                                                                           | Biểu diễn trong CVAT/export                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| LABEL      | Chắc chắn là đầu đèn xe, màu đọc được                                                             | Bbox `vehicle_signal_head` + `display=red/yellow/green`.                                                                                                                           |
+| IGNORE     | Chắc chắn ngoài scope hoặc không nhận diện được là đầu đèn                                        | Không có bbox cho đối tượng đó (các đầu hợp lệ khác trong cùng ảnh vẫn label).                                                                                                     |
+| UNKNOWN    | Chắc chắn là đầu đèn xe nhưng màu không đủ bằng chứng                                             | Bbox `vehicle_signal_head` + `display=unknown`.                                                                                                                                    |
+| ESCALATE   | Không chắc thuộc scope, không thể tách vỏ, nhiều màu trong cùng đầu, hoặc tình huống chưa có rule | Gắn tag ảnh `image_escalate`. Nếu chắc là đầu đèn xe, vẽ bbox, điền các select và đặt `needs_review=yes`; nếu chưa chắc là đèn xe thì **không** vẽ bbox suy đoán, chỉ gắn tag ảnh. |
 
-Đầu bị che một phần: bbox phần thấy được và dùng `unknown` riêng cho thông tin không đọc được. Màu lẫn do chói/LED/camera, đầu quá nhỏ hoặc mưa/đêm: nếu không xác định được màu, `display=unknown`; không lấy màu phản chiếu hoặc tín hiệu bên cạnh thế chỗ. Không dùng `unlit` khi chỉ không thấy bóng vì bị che hoặc ảnh tối.
-
-## 7. Ambiguity / escalation — đề xuất
-
-| Quyết định | Điều kiện                                                                                                            | Trong export CVAT                                                                        |
-| ---------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| LABEL      | Đầu đèn cho phương tiện thấy đủ để nhận diện                                                                         | Bbox `vehicle_signal_head` và các attribute đã chọn.                                     |
-| IGNORE     | Chắc chắn ngoài scope; không nhận ra đầu đèn                                                                         | Không vẽ bbox.                                                                           |
-| UNKNOWN    | Nhận ra đầu đèn nhưng thiếu màu/hướng/lane mapping                                                                   | Bbox và `unknown` ở **đúng field**.                                                      |
-| ESCALATE   | Không thể xác định tín hiệu có khả năng liên quan ego, chỉ thị nhìn như mâu thuẫn, hoặc nghi sự cố cần dữ liệu nguồn | Object: `needs_review=yes`; ảnh: tag `image_escalate`. Tag không phải kết luận đèn hỏng. |
-
-Từng ca ESCALATE cần nhóm ghi lý do ngoài export cho reviewer (sample_id, object, ảnh/chứng cứ cần xem) trong tài liệu QA. Chưa có bản mẫu hoặc quy tắc chấm cho ca hỏng đã được kiểm chứng.
+Tag chỉ cho biết **ảnh cần review**, không chỉ ra object nào: khi gửi reviewer phải ghi thêm tên file và vị trí/miêu tả đầu nghi vấn trong ghi chú QA; xử lý xong mới bỏ tag hoặc cập nhật quyết định. V1 chưa có quy tắc chấm riêng cho ca escalate.
 
 ## 8. Temporal rule
 
-**Bản nháp này áp dụng cho ảnh tĩnh.** Không thêm `transition`, `flashing`, `malfunction` vào JSON: chúng cần chuỗi frame có thời gian/chu kỳ lấy mẫu đáng tin và rule review riêng. Nếu về sau có video phù hợp: cùng đầu vật lý là một Track; `display` phải mutable, đánh keyframe khi **quan sát được** trạng thái mới, kết thúc bằng `outside` khi rời khung; chỉ ghi sự kiện đổi pha khi có ít nhất hai trạng thái rõ trên cùng track theo thời gian. Đây là hướng mở rộng, **chưa triển khai/kiểm chứng** trong task ảnh.
+**Không áp dụng — task ảnh tĩnh.** Không suy diễn đổi pha đỏ→xanh, đèn nhấp nháy hoặc hỏng từ một JPEG hay từ hai ảnh không có thời gian đáng tin. Nếu về sau dùng video/track, cần guideline và ontology phiên bản mới.
 
-## 9. Examples — chưa chốt split
+## 9. Examples
 
-Các ca khảo sát `LISA01`, `LISA23` (đầu mũi tên và đầu tròn) và `BDD12` (đèn người đi bộ) là **ứng viên** để viết ví dụ, chưa phải ví dụ gửi peer. Chỉ đưa `sample_id` vào đây **sau khi** nhóm đã gán nó vào split `example` hoặc `calibration` trong `project/sample_pack.csv` và kiểm lại ảnh ở độ phân giải gốc. Không dùng ảnh blind làm ví dụ.
+Các ví dụ dưới đây chỉ là **minh họa v1 từ ảnh đã xem**, chưa phải gold: `data-image/*.jpg` hiện **chưa có sample_id trong `data/catalog.csv` và chưa được phân split trong `project/sample_pack.csv`**. ID `IMGxx` trong bảng là ID **tạm** (file tương ứng `data/data-image/xx.jpg`), dự kiến dành split `example`; phải đăng ký catalog/split và rà soát toàn ảnh ở độ phân giải gốc trước khi dùng trong CVAT hoặc gửi peer. Không đưa ảnh đã chọn `blind` vào ví dụ.
 
-## 10. Common mistakes cần thử trong calibration
+| sample_id (tạm; example dự kiến) | Thấy gì                                               | Expected output minh họa (không phải toàn bộ bbox của ảnh)                                                                                                                                                           | Rule áp dụng                                      |
+| -------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| IMG03 (`3.jpg`)                  | Hai đầu đèn trên thanh ngang sáng đỏ                  | Hai bbox riêng `vehicle_signal_head`, mỗi bbox `display=red`.                                                                                                                                                        | 2, 4: mỗi vỏ một bbox.                            |
+| IMG08 (`8.jpg`)                  | Đèn xe đạp xanh cận cảnh; đèn xe cơ giới ở xa         | Không bbox cho **đèn xe đạp**; vẫn label các đầu đèn xe cơ giới nhận ra được ở xa (màu không rõ thì `unknown`).                                                                                                      | 5, 6: ignore theo đối tượng, không ignore cả ảnh. |
+| IMG09 (`9.jpg`)                  | Đầu mũi tên trái sáng đỏ và các đầu tối bên cạnh      | Đầu mũi tên là một bbox `signal_form=arrow`, `arrow_direction=left`, `display=red`; đầu xe cơ giới tối nhưng nhận ra được là bbox khác `display=unknown` nếu không chắc bóng đều tắt; không vẽ bbox cho bảng đếm số. | 2, 4, 5: không gộp đầu/không đoán màu bóng tối.   |
+| IMG17 (`17.jpg`)                 | Đầu đèn xe trên cao sáng xanh, đèn người đi bộ ở dưới | Bbox cho đầu đèn xe sáng xanh với `display=green`; không bbox cho đèn người đi bộ.                                                                                                                                   | 5: tách tín hiệu theo đối tượng.                  |
 
-- Gộp đầu mũi tên với đầu tròn hoặc áp màu của một đầu cho đầu còn lại.
-- Xem `green` của một đầu là "ego được rẽ/đi thẳng" khi lane mapping chưa rõ.
-- Gán `unlit` thành "hỏng"; gán chuyển pha/nhấp nháy từ một frame.
-- Vẽ đèn người đi bộ hay quầng sáng/phản chiếu như đèn phương tiện; quên gán `unknown` và để `__undefined__` trong export.
+## 10. Common mistakes
 
-## Việc nhóm phải xác nhận trước khi nâng v1
-
-1. Chốt downstream task: chỉ nhận dạng đầu đèn hay bắt buộc phán đoán quyền đi theo hướng? Nếu quyền đi là mục tiêu, schema này **chưa đủ**.
-2. Kiểm kê ảnh đủ positive/negative/edge và 4–5 ảnh blind có case critical thực sự; chọn split không rò rỉ (LISA là một clip liên tiếp).
-3. Review bbox unit, ngưỡng geometry, tên/allowed values cùng hai annotator; thử Raw JSON và **export XML thật** từ CVAT.
-4. Chốt ai review ca `image_escalate`; viết ví dụ từ split example/calibration và soạn gold trước freeze.
+- Vẽ một bbox cho cả cụm đèn, hoặc vẽ từng bóng thay vì từng **vỏ độc lập** → tách đúng theo mục 2.
+- Label cả bảng đếm số, đèn xe đạp/người đi bộ hoặc bỏ qua toàn ảnh chỉ vì có các tín hiệu này → xét từng đối tượng theo mục 5.
+- Điền màu từ đầu bên cạnh, từ vị trí bóng, hay coi bóng tối là đèn hỏng → chỉ ghi màu quan sát được; không chắc thì `unknown`.
+- Suy xe ego được đi/rẽ, suy chuyển pha/nhấp nháy từ ảnh tĩnh → nằm ngoài phạm vi v1.
+- Để bất kỳ select nào là `__undefined__` trong bbox hoặc chỉ nói miệng ca khó mà không tag `image_escalate` → hoàn tất giá trị và thể hiện quyết định trong export.

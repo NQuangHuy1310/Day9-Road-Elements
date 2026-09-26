@@ -52,8 +52,8 @@ ngắn. Task ảnh tĩnh ghi "Không áp dụng — task ảnh tĩnh".
 TODO — positive, negative và edge case, mỗi ví dụ có sample_id (split example/calibration) và expected output.
 
 | sample_id | Thấy gì | Expected output | Rule áp dụng |
-|---|---|---|---|
-| TODO | TODO | TODO | TODO |
+| --------- | ------- | --------------- | ------------ |
+| TODO      | TODO    | TODO            | TODO         |
 
 ## 10. Common mistakes
 

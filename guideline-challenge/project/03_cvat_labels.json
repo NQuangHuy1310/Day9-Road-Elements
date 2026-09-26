@@ -1,1 +1,50 @@
-[]
+[
+    {
+        "name": "vehicle_signal_head",
+        "color": "#F9A825",
+        "type": "rectangle",
+        "attributes": [
+            {
+                "name": "signal_form",
+                "mutable": false,
+                "input_type": "select",
+                "default_value": "__undefined__",
+                "values": ["__undefined__", "circular", "arrow", "unknown"]
+            },
+            {
+                "name": "display",
+                "mutable": false,
+                "input_type": "select",
+                "default_value": "__undefined__",
+                "values": ["__undefined__", "red", "yellow", "green", "unlit", "unknown"]
+            },
+            {
+                "name": "arrow_direction",
+                "mutable": false,
+                "input_type": "select",
+                "default_value": "__undefined__",
+                "values": ["__undefined__", "left", "straight", "right", "u_turn", "unknown", "not_applicable"]
+            },
+            {
+                "name": "ego_applicability",
+                "mutable": false,
+                "input_type": "select",
+                "default_value": "__undefined__",
+                "values": ["__undefined__", "applies", "does_not_apply", "unknown"]
+            },
+            {
+                "name": "needs_review",
+                "mutable": false,
+                "input_type": "select",
+                "default_value": "__undefined__",
+                "values": ["__undefined__", "yes", "no"]
+            }
+        ]
+    },
+    {
+        "name": "image_escalate",
+        "color": "#8E24AA",
+        "type": "tag",
+        "attributes": []
+    }
+]
